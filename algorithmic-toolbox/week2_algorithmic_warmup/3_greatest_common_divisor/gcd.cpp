@@ -14,21 +14,29 @@ int gcd_naive(int a, int b) {
 }
 
 int gcd_fast(int a, int b) {
+  if (a == 0) return b;
+  if (b == 0) return a;
 
+  int a_mod_b = a % b;
+  return gcd_fast(b, a_mod_b);
 }
 
-int test_solution(int n_tests = 50, int max=200) {
+void test_solution(int n_tests = 50, int max=200) {
   assert(gcd_fast(18, 35) == 1);
   assert(gcd_fast(28851538, 1183019) == 17657);
 
   // Stress test
   for (int i=0; i < n_tests; i++) {
-    int rand_a = rand() % max;
-    int rand_b = rand() % max;
+    int rand_a = rand() % max + 1;
+    int rand_b = rand() % max + 1;
 
-    std::cout << rand_a << " " << rand_b;
+    int naive_res = gcd_naive(rand_a, rand_b);
+    int fast_res = gcd_fast(rand_a, rand_b);
 
-    assert(gcd_naive(rand_a, rand_b) == gcd_fast(rand_a, rand_b));
+    std::cout << rand_a << " " << rand_b << ": " <<
+      naive_res << " " << fast_res << std::endl;
+
+    assert(naive_res == fast_res);
   }
 
   std::cout << "Test ended successfully";
@@ -36,10 +44,11 @@ int test_solution(int n_tests = 50, int max=200) {
 
 int main() {
   int a, b;
-  // std::cin >> a >> b;
+  std::cin >> a >> b;
 
   // std::cout << gcd_naive(a, b) << std::endl;
-  test_solution();
+  // test_solution(100, 500);
+  std::cout << gcd_fast(a, b) << std::endl;
 
   return 0;
 }
