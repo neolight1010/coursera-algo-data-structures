@@ -1,6 +1,14 @@
 #include <iostream>
 #include <cassert>
 
+int gcd(int a, int b) {
+  if (a == 0) return b;
+  if (b == 0) return a;
+
+  int a_mod_b = a % b;
+  return gcd(b, a_mod_b);
+}
+
 long long lcm_naive(int a, int b) {
   for (long l = 1; l <= (long long) a * b; ++l)
     if (l % a == 0 && l % b == 0)
@@ -9,8 +17,15 @@ long long lcm_naive(int a, int b) {
   return (long long) a * b;
 }
 
-int lcm_fast(int a, int b) {
-  return 0;
+long lcm_fast(int a, int b) {
+  long long lcm = 1;
+
+  int gcd_ab = gcd(a, b);
+  if (gcd_ab == 1) return (long long) a * (long long) b;
+
+  lcm *= lcm_fast(a / gcd_ab, b / gcd_ab) * (long long) gcd_ab;
+
+  return lcm;
 }
 
 void test_solution(int n_tests=80, int max=300) {
@@ -36,11 +51,11 @@ void test_solution(int n_tests=80, int max=300) {
 
 int main() {
   int a, b;
-  // std::cin >> a >> b;
+  std::cin >> a >> b;
 
   // std::cout << lcm_naive(a, b) << std::endl;
-  test_solution();
-  // std::cout << lcm_fast(a, b) << std::endl;
+  // test_solution(200, 10000);
+  std::cout << lcm_fast(a, b) << std::endl;
 
   return 0;
 }
