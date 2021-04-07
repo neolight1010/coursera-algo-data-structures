@@ -20,10 +20,23 @@ int fibonacci_sum_naive(long long n) {
 }
 
 int fibonacci_sum_fast(long long n) {
-    return 0;
+    n = n % 60; // Pisano period of 10 is 60.
+    if (n <= 1)
+        return n;
+
+    int previous = 0;
+    int current = 1;
+
+    for (int i=2; i < n + 1; i++) {
+        int temp_current = current;
+        current = (previous + current + 1) % 10;
+        previous = temp_current;
+    }
+
+    return current;
 }
 
-void test_solution(int n_tests = 40, int max_n = 50) {
+void test_solution(int n_tests = 50, int max_n = 70) {
     std::cout << "- " << 3 << ": " << fibonacci_sum_fast(3) << std::endl;
     assert(fibonacci_sum_fast(3) == 4);
     
@@ -37,19 +50,20 @@ void test_solution(int n_tests = 40, int max_n = 50) {
         int naive_sol = fibonacci_sum_naive(rand_n);
         int fast_sol = fibonacci_sum_fast(rand_n);
 
-        std::cout << "- " << rand_n << ": " << naive_sol << " " << fast_sol;
+        std::cout << "- " << rand_n << ": " << naive_sol << " " << fast_sol << std::endl;
+        assert(naive_sol == fast_sol);
     }
 
     std::cout << "Test ended successfully";
 }
 
 int main() {
-    // long long n = 0;
-    // std::cin >> n;
+    long long n = 0;
+    std::cin >> n;
     
     // std::cout << fibonacci_sum_naive(n);
-    test_solution();
-    // std::cout << fibonacci_sum_fast(n);
+    // test_solution();
+    std::cout << fibonacci_sum_fast(n);
 
     return 0;
 }
