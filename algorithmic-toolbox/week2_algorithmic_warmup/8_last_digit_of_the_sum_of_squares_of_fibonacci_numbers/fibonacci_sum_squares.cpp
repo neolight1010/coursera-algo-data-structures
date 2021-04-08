@@ -20,10 +20,26 @@ int fibonacci_sum_squares_naive(long long n) {
 }
 
 int fibonacci_sum_squares_fast(long long n) {
-    return 0;
+    if (n <= 1) return n;
+
+    n = n % 60;
+    int f_n, f_np1;
+
+    int previous = 0;
+    int current = 1;
+    for (int i=0; i < n; i++) {
+        int temp_current = current;
+        current = (previous + current) % 10;
+        previous = temp_current;
+
+        if (i == n-2) f_n = current;
+        if (i == n-1) f_np1 = current;
+    }
+
+    return (f_n * f_np1) % 10;
 }
 
-void test_solution(int n_tests = 90, int max_n = 100) {
+void test_solution(int n_tests = 60, int max_n =50) {
     std::cout << "- 7: " << fibonacci_sum_squares_fast(7) << std::endl;
     assert(fibonacci_sum_squares_fast(7) == 3);
 
@@ -48,10 +64,12 @@ void test_solution(int n_tests = 90, int max_n = 100) {
 }
 
 int main() {
-    // long long n = 0;
-    // std::cin >> n;
+    long long n = 0;
+    std::cin >> n;
 
     // std::cout << fibonacci_sum_squares_naive(n);
-    test_solution();
-    // std::cout << fibonacci_sum_squares_fast(n);
+    // test_solution();
+    std::cout << fibonacci_sum_squares_fast(n);
+
+    return 0;
 }
