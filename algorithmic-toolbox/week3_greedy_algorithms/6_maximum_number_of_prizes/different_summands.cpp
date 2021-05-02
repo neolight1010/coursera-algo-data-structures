@@ -5,7 +5,24 @@ using std::vector;
 
 vector<int> optimal_summands(int n) {
   vector<int> summands;
-  //write your code here
+  int sum = 0;
+
+  if (n == 1)
+    return (vector<int>) {1};
+
+  for (int i=1; i <= n; i++) {
+    if (sum + i > n) {
+      summands.push_back(n - sum);
+      break;
+    }
+
+    summands.push_back(i);
+    sum += i;
+  }
+
+  summands.rbegin()[1] = summands.rbegin()[0] + summands.rbegin()[1];
+  summands.erase(summands.end() - 1);
+
   return summands;
 }
 
