@@ -4,14 +4,36 @@
 using std::vector;
 
 int optimal_weight(int W, const vector<int> &w) {
-  //write your code here
-  int current_weight = 0;
-  for (size_t i = 0; i < w.size(); ++i) {
-    if (current_weight + w[i] <= W) {
-      current_weight += w[i];
+  vector<vector<int>> dp_table;
+
+  for (int i = 0; i <= w.size(); i++) {
+    for (int j = 0; j <= W; j++) {
+      if (j == 0)
+        dp_table.push_back(vector<int>{});
+
+      if (i == 0 || j == 0) {
+        dp_table[i].push_back(0);
+        continue;
+      }
+
+      dp_table[i].push_back(dp_table[i - 1][j]);
+
+      int weight = w[i - 1];
+      if (j >= weight) {
+        if (dp_table[i - 1][j - weight] + weight > dp_table[i][j])
+          dp_table[i][j] = dp_table[i - 1][j - weight] + weight;
+      }
     }
   }
-  return current_weight;
+
+  // std::cout << "\nTABLE:\n";
+  // for (auto row : dp_table) {
+  //   for (int x : row) {
+  //     std::cout << x << " ";
+  //   }
+  //   std::cout << std::endl;
+  // }
+  return dp_table.back().back();
 }
 
 int main() {
