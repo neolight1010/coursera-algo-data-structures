@@ -26,13 +26,6 @@ int optimal_weight(int W, const vector<int> &w) {
     }
   }
 
-  // std::cout << "\nTABLE:\n";
-  // for (auto row : dp_table) {
-  //   for (int x : row) {
-  //     std::cout << x << " ";
-  //   }
-  //   std::cout << std::endl;
-  // }
   return dp_table.back().back();
 }
 
