@@ -1,36 +1,58 @@
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Scanner;
 
 public class Toposort {
-    private static ArrayList<Integer> toposort(ArrayList<Integer>[] adj) {
-        int used[] = new int[adj.length];
-        ArrayList<Integer> order = new ArrayList<Integer>();
-        //write your code here
-        return order;
+    private static boolean[] explored;
+    private static ArrayList<Integer> postOrder = new ArrayList<>();
+
+    private static ArrayList<Integer> toposort(ArrayList<ArrayList<Integer>> adj) {
+        int n = adj.size();
+        explored = new boolean[n];
+
+        for (int i = 0; i < n; i++) {
+            if (!explored[i]) {{
+                explore(adj, i, true);
+            }}
+        }
+
+        return postOrder;
     }
 
-    private static void dfs(ArrayList<Integer>[] adj, int[] used, ArrayList<Integer> order, int s) {
-      //write your code here
+    private static void explore(ArrayList<ArrayList<Integer>> adj, int initialNode, boolean modifyPostOrder) {
+        explored[initialNode] = true;
+
+        for (int neighbor : adj.get(initialNode)) {
+            if (!explored[neighbor]) {
+                explore(adj, neighbor, modifyPostOrder);
+            }
+        }
+
+        if (modifyPostOrder) {
+            postOrder.add(0, initialNode);
+        }
     }
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         int n = scanner.nextInt();
         int m = scanner.nextInt();
-        ArrayList<Integer>[] adj = (ArrayList<Integer>[])new ArrayList[n];
+
+        ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
         for (int i = 0; i < n; i++) {
-            adj[i] = new ArrayList<Integer>();
+            adj.add(new ArrayList<>());
         }
+
         for (int i = 0; i < m; i++) {
             int x, y;
             x = scanner.nextInt();
             y = scanner.nextInt();
-            adj[x - 1].add(y - 1);
+            adj.get(x - 1).add(y - 1);
         }
-        ArrayList<Integer> order = toposort(adj);
-        for (int x : order) {
-            System.out.print((x + 1) + " ");
+
+        scanner.close();
+
+        for (int node : toposort(adj)) {
+            System.out.print((node + 1) + " ");
         }
     }
 }
