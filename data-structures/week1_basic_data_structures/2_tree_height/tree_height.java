@@ -2,7 +2,7 @@ import java.util.*;
 import java.io.*;
 
 public class tree_height {
-    class FastScanner {
+	class FastScanner {
 		StringTokenizer tok = new StringTokenizer("");
 		BufferedReader in;
 
@@ -15,15 +15,26 @@ public class tree_height {
 				tok = new StringTokenizer(in.readLine());
 			return tok.nextToken();
 		}
+
 		int nextInt() throws IOException {
 			return Integer.parseInt(next());
 		}
 	}
 
+	public class Node {
+	    int key;
+	    int level = 0;
+	    ArrayList<Integer> children = new ArrayList<>();
+
+	    Node(int key) {
+		this.key = key;
+	    }
+	}
+
 	public class TreeHeight {
 		int n;
 		int parent[];
-		
+
 		void read() throws IOException {
 			FastScanner in = new FastScanner();
 			n = in.nextInt();
@@ -34,28 +45,58 @@ public class tree_height {
 		}
 
 		int computeHeight() {
-                        // Replace this code with a faster implementation
-			int maxHeight = 0;
-			for (int vertex = 0; vertex < n; vertex++) {
-				int height = 0;
-				for (int i = vertex; i != -1; i = parent[i])
-					height++;
-				maxHeight = Math.max(maxHeight, height);
+		    // Generate tree.
+		    ArrayList<Node> nodes = new ArrayList<>();
+		    Node root = null;
+
+		    for (int i = 0; i < n; i++) {
+			nodes.add(new Node(i));
+		    }
+
+		    for (int i = 0; i < n; i++) {
+			if (parent[i] == -1) {
+			    root = nodes.get(i);
+			    continue;
+			} else {
+			    nodes.get(parent[i]).children.add(i);
 			}
-			return maxHeight;
+		    }
+
+		    // BFS
+		    int maxLevel = 0;
+		    Queue<Node> queue = new LinkedList<>();
+		    queue.add(root);
+
+		    while (!queue.isEmpty()) {
+			Node node = queue.remove();
+
+			for (int childIndex : node.children) {
+			    Node child = nodes.get(childIndex);
+			    child.level = node.level + 1;
+
+			    queue.add(child);
+
+			    if (child.level > maxLevel) {
+				maxLevel = child.level;
+			    }
+			}
+		    }
+
+		    return maxLevel + 1;
 		}
 	}
 
 	static public void main(String[] args) throws IOException {
-            new Thread(null, new Runnable() {
-                    public void run() {
-                        try {
-                            new tree_height().run();
-                        } catch (IOException e) {
-                        }
-                    }
-                }, "1", 1 << 26).start();
+		new Thread(null, new Runnable() {
+			public void run() {
+				try {
+					new tree_height().run();
+				} catch (IOException e) {
+				}
+			}
+		}, "1", 1 << 26).start();
 	}
+
 	public void run() throws IOException {
 		TreeHeight tree = new TreeHeight();
 		tree.read();
