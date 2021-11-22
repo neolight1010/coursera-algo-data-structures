@@ -4,17 +4,24 @@ import sys
 class StackWithMax():
     def __init__(self):
         self.__stack = []
+        self.__max_stack = []
 
     def Push(self, a):
         self.__stack.append(a)
 
+        if not self.__max_stack or a > self.__max_stack[-1]:
+            self.__max_stack.append(a)
+        else:
+            self.__max_stack.append(self.__max_stack[-1])
+
     def Pop(self):
         assert(len(self.__stack))
         self.__stack.pop()
+        self.__max_stack.pop()
 
     def Max(self):
         assert(len(self.__stack))
-        return max(self.__stack)
+        return self.__max_stack[-1]
 
 
 if __name__ == '__main__':
