@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -19,36 +18,68 @@ public class BuildHeap {
         int n = in.nextInt();
         data = new int[n];
         for (int i = 0; i < n; ++i) {
-          data[i] = in.nextInt();
+            data[i] = in.nextInt();
         }
     }
 
     private void writeResponse() {
         out.println(swaps.size());
         for (Swap swap : swaps) {
-          out.println(swap.index1 + " " + swap.index2);
+            out.println(swap.index1 + " " + swap.index2);
         }
     }
 
     private void generateSwaps() {
-      swaps = new ArrayList<Swap>();
-      // The following naive implementation just sorts 
-      // the given sequence using selection sort algorithm
-      // and saves the resulting sequence of swaps.
-      // This turns the given array into a heap, 
-      // but in the worst case gives a quadratic number of swaps.
-      //
-      // TODO: replace by a more efficient implementation
-      for (int i = 0; i < data.length; ++i) {
-        for (int j = i + 1; j < data.length; ++j) {
-          if (data[i] > data[j]) {
-            swaps.add(new Swap(i, j));
-            int tmp = data[i];
-            data[i] = data[j];
-            data[j] = tmp;
-          }
+        swaps = new ArrayList<Swap>();
+
+        for (int i = data.length / 2; i >= 0; i--) {
+            shiftDown(i);
         }
-      }
+    }
+
+    private int leftChild(int i) {
+        return (2 * (i + 1)) - 1;
+    }
+
+    private int rightChild(int i) {
+        return leftChild(i) + 1;
+    }
+
+    private int parent(int i) {
+        return ((i + 1) / 2) - 1;
+    }
+
+    private void swap(int i, int j) {
+        int temp = data[i];
+
+        data[i] = data[j];
+        data[j] = temp;
+
+        swaps.add(new Swap(i, j));
+    }
+
+    /*private void shiftUp(int i) {
+        while (i > 0 && data[parent(i)] > data[i]) {
+            swap(parent(i), i);
+            i = parent(i);
+        }
+    }*/
+
+    private void shiftDown(int i) {
+        int minIndex = i;
+
+        if (leftChild(i) < data.length && data[leftChild(i)] < data[minIndex]) {
+            minIndex = leftChild(i);
+        }
+
+        if (rightChild(i) < data.length && data[rightChild(i)] < data[minIndex]) {
+            minIndex = rightChild(i);
+        }
+
+        if (i != minIndex) {
+            swap(i, minIndex);
+            shiftDown(minIndex);
+        }
     }
 
     public void solve() throws IOException {
