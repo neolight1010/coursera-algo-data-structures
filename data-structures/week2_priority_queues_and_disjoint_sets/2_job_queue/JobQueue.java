@@ -1,4 +1,6 @@
 import java.io.*;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class JobQueue {
@@ -31,20 +33,39 @@ public class JobQueue {
     }
 
     private void assignJobs() {
-        // TODO: replace this code with a faster algorithm.
         assignedWorker = new int[jobs.length];
         startTime = new long[jobs.length];
-        long[] nextFreeTime = new long[numWorkers];
-        for (int i = 0; i < jobs.length; i++) {
-            int duration = jobs[i];
-            int bestWorker = 0;
-            for (int j = 0; j < numWorkers; ++j) {
-                if (nextFreeTime[j] < nextFreeTime[bestWorker])
-                    bestWorker = j;
+
+        long[] currentTime = new long[numWorkers];
+
+        Comparator<Integer> comp = (i, j) -> {
+            if (currentTime[i] > currentTime[j]) {
+                return 1;
+            } else if (currentTime[j] > currentTime[i]) {
+                return -1;
+            } else {
+                if (i > j) {
+                    return 1;
+                }
+                return -1;
             }
-            assignedWorker[i] = bestWorker;
-            startTime[i] = nextFreeTime[bestWorker];
-            nextFreeTime[bestWorker] += duration;
+        };
+
+        PriorityQueue<Integer> queue = new PriorityQueue<>(comp);
+        for (int i = 0; i < numWorkers; i++) {
+            queue.add(i);
+        }
+        
+        // Simulate
+        for (int i = 0; i < jobs.length; i++) {
+            int assigned = queue.remove();
+            long time = currentTime[assigned];
+
+            assignedWorker[i] = assigned;
+            startTime[i] = time;
+
+            currentTime[assigned] = time + jobs[i];
+            queue.add(assigned);
         }
     }
 
