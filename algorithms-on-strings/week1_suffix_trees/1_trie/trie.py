@@ -23,7 +23,7 @@ class Trie:
         self.root = Node("")
         self._all_nodes = [self.root]
 
-    def add_pattern(self, pattern: str) -> None:
+    def add_pattern(self, pattern):
         current_node = self.root
 
         for char in pattern:
@@ -41,23 +41,18 @@ class Trie:
 
     def get_adjacency(self):
         result = []
+        indices = self.__build_node_indices()
 
-        indices = self.__build_node_indices__()
-        queue = [self.root]
+        def create_edge(parent, child):
+            edge = (indices[parent], indices[child])
+            result.append((edge, child.value))
 
-        while len(queue) > 0:
-            current_node = queue.pop(0)
-
-            for child in current_node.children_nodes():
-                edge = (indices[current_node], indices[child])
-                result.append((edge, child.value))
-
-                queue.append(child)
+        self.traverse_parent_child(create_edge)
 
         return result
 
-
-    def __build_node_indices__(self):
+    
+    def __build_node_indices(self):
         result = {}
 
         for i, node in enumerate(self._all_nodes):
@@ -66,6 +61,16 @@ class Trie:
         return result
 
 
+    def traverse_parent_child(self, do):
+        queue = [self.root]
+
+        while queue:
+            current_node = queue.pop(0)
+
+            for child in current_node.children_nodes():
+                do(current_node, child)
+
+                queue.append(child)
 
 
 if __name__ == "__main__":
